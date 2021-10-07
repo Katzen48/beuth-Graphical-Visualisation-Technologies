@@ -1,0 +1,18 @@
+:root {
+    --sprite-index: 0;
+}
+
+#disc {
+    --sprite-size: -256px;
+}
+
+#bunny {
+    --sprite-size: -200px;
+}
+
+img {
+    width: calc(var(--sprite-size) * -1);
+    height: 256px;
+    object-fit: none;
+    object-position: calc(var(--sprite-index) * var(--sprite-size)) 0px;
+}
