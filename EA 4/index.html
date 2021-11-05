@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=default'></script>
+        <script type="text/javascript" src="js/app.js"></script>
+    </head>
+    
+    <body>
+        <button onclick="switchFilled()">Wireframe/Gefüllt umschalten</button>
+        <div style="display: table">
+            <div style="display: table-cell">
+                <p id="mobius" style="white-space: pre-line">
+                    <button onclick="render('mobius')">Mobius</button>
+                    <p>$$ x(r,\alpha) = \cos(\alpha) * (1 + \frac{r}{2}\cos\frac{\alpha}{2}) $$</p>
+                    <p>$$ y(r,\alpha) = \sin(\alpha) * (1 + \frac{r}{2}\cos\frac{\alpha}{2}) $$</p>
+                    <p>$$ z(r,\alpha) = \frac{r}{2}\sin\frac{\alpha}{2} $$</p>
+                    <p>$$ r = \{-1,...,1\} $$</p>
+                </p>
+            </div>
+            <div style="display: table-cell; padding-left: 100px">
+                <p id="funnel" style="white-space: pre-line">
+                    <button onclick="render('funnel')">Funnel</button>
+                    <p>$$ x = u\cos(v) $$</p>
+                    <p>$$ y = u\sin(v) $$</p>
+                    <p>$$ z = \log(u) $$</p>
+                    <p>$$ u = \{0.1,...,2\} $$</p>
+                    <p>$$ v = \{0,...,2\pi\} $$</p>
+                </div>
+            </div>
+        </div>
+
+        <canvas id="canvas" width="800" height="800"></canvas>
+    </body>
+</html>
