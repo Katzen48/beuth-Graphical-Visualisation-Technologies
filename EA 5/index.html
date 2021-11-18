@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script type="text/javascript" src="ext/gl-matrix.js"></script>
+        <script type="text/javascript" src="js/GVT_Src_vertexData_torus.js"></script>
+        <script type="text/javascript" src="js/GVT_Src_vertexData_cone.js"></script>
+        <script type="text/javascript" src="js/GVT_Src_vertexData_icosphere.js"></script>
+        <script type="text/javascript" src="js/app.js"></script>
+        <script type="x-shader/x-vertex" id="vertexshader">
+            attribute vec3 aPosition;
+            attribute vec3 aNormal;
+
+            uniform mat4 uPMatrix;
+            uniform mat4 uMVMatrix;
+
+            varying vec4 vColor;
+
+            void main(){
+                gl_Position = uPMatrix * uMVMatrix * vec4(aPosition, 1.0);
+
+                vColor = vec4(aNormal.x, aNormal.y, aNormal.z, 1.0);
+                vColor = (vColor + 1.0) / 2.0;
+            }
+        </script>
+        <script type="x-shader/x-fragment" id="fragmentshader">
+            precision mediump float;
+            varying vec4 vColor;
+
+            void main() {
+                gl_FragColor = vColor;
+            }
+        </script>
+    </head>
+    
+    <body onload="app.start()">
+        <canvas id="canvas" width="800" height="800"></canvas>
+        <p>
+            <input type="range" min="0" max="5" value="0" oninput="app.updateSphere()" id="slider">
+            <output id="value">0</output><br>
+            c = rotate clockwise on x-axis / shift = invert rotation direction<br>
+            w = up<br>
+            s = down<br>
+            a = left<br>
+            d = right
+        </p>
+    </body>
+</html>
