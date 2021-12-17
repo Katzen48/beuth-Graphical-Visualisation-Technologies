@@ -380,14 +380,6 @@ var app = (function() {
                     interactiveModel.rotate[2] += sign * deltaRotate;
                     break;
             }
-            // Scale/squeese interactiveModel.
-            switch (c) {
-                case ('S'):
-                    interactiveModel.scale[0] *= 1 + sign * deltaScale;
-                    interactiveModel.scale[1] *= 1 - sign * deltaScale;
-                    interactiveModel.scale[2] *= 1 + sign * deltaScale;
-                    break;
-            }
             // Change projection of scene.
             switch (c) {
                 case ('O'):
@@ -412,9 +404,21 @@ var app = (function() {
                     // Move camera up and down.
                     camera.eye[1] += sign * deltaTranslate;
                     break;
-                case ('D'):
-                    // Camera distance to center.
-                    camera.distance += sign * deltaTranslate;
+                case('W'):
+                    // Move camera forward
+                    camera.center[2] -= deltaTranslate;
+                    break;
+                case('S'):
+                    // Move camera backward
+                    camera.center[2] += deltaTranslate;
+                    break;
+                case('A'):
+                    // Move camera left
+                    camera.center[0] -= deltaTranslate;
+                    break;
+                case('D'):
+                    // Move camera right
+                    camera.center[0] += deltaTranslate;
                     break;
                 case ('V'):
                     // Camera fovy in radian.
