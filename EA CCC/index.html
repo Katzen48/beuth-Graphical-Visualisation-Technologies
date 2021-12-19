@@ -1,0 +1,135 @@
+<!DOCTYPE html5>
+<html>
+	<head>
+		<script src="ext/gl-matrix.js"></script>
+		<script src="ext/chart.min.js"></script>
+		<script src="js/GVT_Src_vertexData_plane.js"></script>
+		<script src="js/GVT_Src_vertexData_cube.js"></script>
+		<script src="js/GVT_Src_vertexData_sphere.js"></script>
+		<script src="js/GVT_Src_vertexData_torus.js"></script>
+		<script src="js/app.js"></script>
+		<script type="x-shader/x-vertex" id="vertexshader">
+			attribute vec3 aPosition;
+			attribute vec3 aNormal;
+			
+			uniform mat4 uPMatrix;
+			uniform mat4 uMVMatrix;
+			uniform mat3 uNMatrix;
+			
+			//uniform vec4 uColor;
+			varying vec4 vColor;
+						
+			// Ambient light.
+			uniform vec3 ambientLight;
+			
+			// Pointlights.
+			const int MAX_LIGHT_SOURCES = 8;
+			struct LightSource {
+				bool isOn;
+				vec3 position;
+				vec3 color;
+			};
+			uniform LightSource light[MAX_LIGHT_SOURCES];
+			
+			// Material.
+			struct PhongMaterial {
+				vec3 ka;
+				vec3 kd;
+				vec3 ks;
+				float ke; 
+			};
+			uniform PhongMaterial material;
+			
+			// Phong illumination for single light source,
+			// no ambient light.
+			vec3 phong(vec3 p, vec3 n, vec3 v, LightSource l) {
+				vec3 L = l.color;
+
+				vec3 s = normalize(l.position - p);
+				vec3 r = reflect(-s, n);
+
+				float sn = max( dot(s,n), 0.0);
+				float rv = max( dot(r,v), 0.0);
+
+				vec3 diffuse = material.kd * L * sn;
+
+				vec3 specular = material.ks * L * pow(rv, material.ke);
+
+				return diffuse + specular;
+			}
+			
+			// Phong illumination for multiple light sources
+			vec3 phong(vec3 p, vec3 n, vec3 v) {
+			
+				// Calculate ambient light.
+				vec3 result = material.ka * ambientLight;
+				
+				// Add light from all light sources.
+				for(int j=0; j < MAX_LIGHT_SOURCES; j++){
+					if(light[j].isOn){
+						result += phong(p, n, v, light[j]);
+					}
+				}
+				return result;
+			}
+			
+			void main(){
+				// Calculate vertex position in eye coordinates. 
+				vec4 tPosition = uMVMatrix * vec4(aPosition, 1.0);
+				// Calculate projektion.
+				gl_Position = uPMatrix * tPosition;
+			
+				vec3 tNormal = normalize(uNMatrix * aNormal);
+				
+				// Calculate view vector.
+				vec3 v = normalize(-tPosition.xyz);	
+								
+				vColor = vec4( phong(tPosition.xyz, tNormal, v), 1.0);
+			}
+		</script>
+		<script type="x-shader/x-fragment" id="fragmentshader">
+			precision mediump float;
+			
+			varying vec4 vColor;
+			
+			void main() {
+				gl_FragColor = vColor;
+			}
+		</script>
+	</head>
+	<body>
+		<p>
+			Please Turn your Sound on
+		</p>
+		<canvas id="canvas" width="800" height="800" style="display: inline-block"></canvas>
+		<canvas id="chart" width="500" height="500" style="display: inline-block"></canvas>
+		<label for="n" style="display: block">N</label>
+		<input type="range" id="n" name="N" min="3" max="32" oninput="app.updateDisplayedVariables(true)" value="32">
+		<output id="n-output">32</output>
+
+		<label for="r" style="display: block">R</label>
+		<input type="range" id="r" name="R" min="0.1" max="0.25" oninput="app.updateDisplayedVariables(true)" step="0.05" value="0.2">
+		<output id="r-output">0.2</output>
+
+		<label for="k" style="display: block">K</label>
+		<input type="range" id="k" name="K" min="1" max="31" oninput="app.updateDisplayedVariables(true)" value="16">
+		<output id="k-output">16</output>
+
+		<label for="z" style="display: block">Z</label>
+		<input type="range" id="z" name="Z" min="50" max="200" value="100" oninput="app.updateDisplayedVariables(true)">
+		<output id="z-output">100</output>
+
+		<label for="p" style="display: block">p</label>
+		<input type="range" id="p" name="p" min="0.1" max="1" value="0.5" step="0.05" oninput="app.updateDisplayedVariables(true)">
+		<output id="p-output">0.5</output>
+
+		<label for="g" style="display: block">G</label>
+		<input type="range" id="g" name="G" min="0" max="32" value="2" disabled>
+		<output id="g-output">2</output>
+
+		<button id="submit" style="display: block" onclick="app.start()">Start</button>
+		<p>
+			Audio by <a href="https://www.youtube.com/watch?v=v2TrctpFvsI">Sound Effect Database</a>
+		</p>
+	</body>
+</html>
