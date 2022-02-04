@@ -97,7 +97,7 @@ var app = (function () {
         // render
         // Generate or load data.
         //Data.generateData();
-        Data.readFileFromServer('data/seeds/seeds_dataset.csv');
+        Data.readFileFromServer('data/seeds/Cluster 2.csv');
     }
 
     function init() {
@@ -835,7 +835,7 @@ var app = (function () {
     // NEW DIM
     function init_tSNE(data) {
         var opt = {};
-        opt.epsilon = 20; // epsilon is learning rate (10 = default)
+        opt.epsilon = 50; // epsilon is learning rate (10 = default)
         opt.perplexity = 10; // roughly how many neighbors each point influences (30 = default)
         opt.dim = 7; // dimensionality of the embedding (2 = default)
 
